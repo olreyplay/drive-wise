@@ -5,7 +5,7 @@ import Container from "@/components/Container";
 import CarSelectionForm from "@/components/CarSelectionForm";
 import { getFuelEconomyData } from "@/lib/api";
 
-type SelectedCar = {
+type Car = {
   make: string;
   model: string;
   year: string;
@@ -13,17 +13,27 @@ type SelectedCar = {
   highwayMpg?: string;
   fuelType?: string;
   drive?: string;
-} | null;
+};
+
+type SelectedCar = Car | null;
 
 export default function Home() {
   const [selectedCar, setSelectedCar] = useState<SelectedCar>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [monthlyMiles, setMonthlyMiles] = useState("1000");
   const [fuelPrice, setFuelPrice] = useState("3.5");
+  const [favorites, setFavorites] = useState<SelectedCar[]>([]);
 
   const cityMpg = Number(selectedCar?.cityMpg || 0);
   const monthlyMilesValue = Number(monthlyMiles);
   const fuelPriceValue = Number(fuelPrice);
+
+  const isFavorite = favorites.some(
+    (car) =>
+      car.make === selectedCar?.make &&
+      car.model === selectedCar?.model &&
+      car.year === selectedCar?.year,
+  );
 
   const monthlyFuelCost =
     cityMpg > 0 ? (monthlyMilesValue / cityMpg) * fuelPriceValue : 0;
@@ -48,6 +58,34 @@ export default function Home() {
     });
 
     setIsLoading(false);
+  }
+
+  function addToFavorites() {
+    if (!selectedCar) return;
+
+    const exists = favorites.some(
+      (car) =>
+        car.make === selectedCar.make &&
+        car.model === selectedCar.model &&
+        car.year === selectedCar.year,
+    );
+
+    if (exists) return;
+
+    setFavorites([...favorites, selectedCar]);
+  }
+
+  function removeFromFavorites(carToRemove: SelectedCar) {
+    setFavorites(
+      favorites.filter(
+        (car) =>
+          !(
+            car.make === carToRemove?.make &&
+            car.model === carToRemove?.model &&
+            car.year === carToRemove?.year
+          ),
+      ),
+    );
   }
 
   return (
@@ -92,6 +130,14 @@ export default function Home() {
               <h3 className="mt-2 text-2xl font-bold text-slate-800">
                 {selectedCar.year} {selectedCar.make} {selectedCar.model}
               </h3>
+
+              <button
+                onClick={addToFavorites}
+                disabled={isFavorite}
+                className="mt-3 rounded-lg px-4 py-2 text-sm font-medium text-white transition bg-slate-800 hover:bg-slate-900 disabled:bg-green-600 disabled:cursor-not-allowed"
+              >
+                {isFavorite ? "Saved To Favorites" : "Add To Favorites"}
+              </button>
 
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <div className="rounded-xl bg-white p-4 shadow-sm">
@@ -189,6 +235,42 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+            </div>
+          )}
+        </section>
+
+        <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-slate-800">
+            Favorite Cars
+          </h2>
+
+          {favorites.length === 0 && (
+            <p className="text-sm text-slate-500">No saved cars yet.</p>
+          )}
+
+          {favorites.length > 0 && (
+            <div className="grid gap-4 md:grid-cols-2">
+              {favorites.map((car, index) => (
+                <div
+                  key={index}
+                  className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+                >
+                  <h3 className="text-lg font-semibold text-slate-800">
+                    {car.year} {car.make} {car.model}
+                  </h3>
+
+                  <p className="mt-1 text-sm text-slate-500">
+                    {car.cityMpg} MPG city • {car.highwayMpg} MPG highway
+                  </p>
+
+                  <button
+                    onClick={() => removeFromFavorites(car)}
+                    className="mt-3 text-sm font-medium text-red-600 hover:underline"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
             </div>
           )}
         </section>

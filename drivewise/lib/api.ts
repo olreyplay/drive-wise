@@ -44,6 +44,8 @@ export async function getFuelEconomyData(
     cityMpg: vehicleXml.getElementsByTagName("city08")[0]?.textContent || "N/A",
     highwayMpg:
       vehicleXml.getElementsByTagName("highway08")[0]?.textContent || "N/A",
+    combinedMpg:
+      vehicleXml.getElementsByTagName("comb08")[0]?.textContent || "N/A",
     fuelType:
       vehicleXml.getElementsByTagName("fuelType")[0]?.textContent || "N/A",
     drive: vehicleXml.getElementsByTagName("drive")[0]?.textContent || "N/A",
