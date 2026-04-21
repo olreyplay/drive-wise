@@ -18,6 +18,17 @@ type SelectedCar = {
 export default function Home() {
   const [selectedCar, setSelectedCar] = useState<SelectedCar>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [monthlyMiles, setMonthlyMiles] = useState("1000");
+  const [fuelPrice, setFuelPrice] = useState("3.5");
+
+  const cityMpg = Number(selectedCar?.cityMpg || 0);
+  const monthlyMilesValue = Number(monthlyMiles);
+  const fuelPriceValue = Number(fuelPrice);
+
+  const monthlyFuelCost =
+    cityMpg > 0 ? (monthlyMilesValue / cityMpg) * fuelPriceValue : 0;
+
+  const yearlyFuelCost = monthlyFuelCost * 12;
 
   async function handleExplore(car: {
     make: string;
@@ -109,6 +120,73 @@ export default function Home() {
                   <p className="mt-1 text-xl font-semibold text-slate-800">
                     {selectedCar.drive}
                   </p>
+                </div>
+              </div>
+
+              <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <h4 className="text-lg font-semibold text-slate-800">
+                  Fuel Cost Calculator
+                </h4>
+
+                <p className="mt-1 text-sm text-slate-500">
+                  Adjust the numbers below to estimate your fuel costs.
+                </p>
+
+                <div className="mt-4 grid gap-4 md:grid-cols-2">
+                  <div>
+                    <label
+                      htmlFor="monthlyMiles"
+                      className="mb-2 block text-sm font-medium text-slate-700"
+                    >
+                      Miles Per Month
+                    </label>
+
+                    <input
+                      id="monthlyMiles"
+                      type="number"
+                      value={monthlyMiles}
+                      onChange={(e) => setMonthlyMiles(e.target.value)}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="fuelPrice"
+                      className="mb-2 block text-sm font-medium text-slate-700"
+                    >
+                      Fuel Price Per Gallon
+                    </label>
+
+                    <input
+                      id="fuelPrice"
+                      type="number"
+                      step="0.1"
+                      value={fuelPrice}
+                      onChange={(e) => setFuelPrice(e.target.value)}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                  <div className="rounded-xl bg-slate-50 p-4">
+                    <p className="text-sm text-slate-500">
+                      Estimated Monthly Fuel Cost
+                    </p>
+                    <p className="mt-1 text-2xl font-bold text-slate-800">
+                      ${monthlyFuelCost.toFixed(2)}
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl bg-slate-50 p-4">
+                    <p className="text-sm text-slate-500">
+                      Estimated Yearly Fuel Cost
+                    </p>
+                    <p className="mt-1 text-2xl font-bold text-slate-800">
+                      ${yearlyFuelCost.toFixed(2)}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
