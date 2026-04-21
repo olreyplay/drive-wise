@@ -9,7 +9,11 @@ type Model = {
   Model_Name: string;
 };
 
-export default function CarSelectionForm() {
+type CarSelectionFormProps = {
+  onExplore: (car: { make: string; model: string; year: string }) => void;
+};
+
+export default function CarSelectionForm({ onExplore }: CarSelectionFormProps) {
   const [selectedMake, setSelectedMake] = useState("");
   const [models, setModels] = useState<Model[]>([]);
   const [selectedModel, setSelectedModel] = useState("");
@@ -27,6 +31,16 @@ export default function CarSelectionForm() {
       setSelectedModel("");
     });
   }, [selectedMake]);
+
+  function handleExplore() {
+    if (!selectedMake || !selectedModel || !selectedYear) return;
+
+    onExplore({
+      make: selectedMake,
+      model: selectedModel,
+      year: selectedYear,
+    });
+  }
 
   return (
     <section className="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md">
@@ -116,7 +130,11 @@ export default function CarSelectionForm() {
         </div>
       </div>
 
-      <button className="mt-6 rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700">
+      <button
+        onClick={handleExplore}
+        disabled={!selectedMake || !selectedModel || !selectedYear}
+        className="mt-6 rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+      >
         Explore Car
       </button>
     </section>
