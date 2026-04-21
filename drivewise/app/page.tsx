@@ -2,7 +2,7 @@ import Container from "@/components/Container";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 text-slate-900">
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900">
       <Container>
         <header className="mb-10 flex items-center justify-between">
           <div>
@@ -18,16 +18,68 @@ export default function Home() {
         </header>
 
         <section className="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md">
-          <h2 className="mb-3 text-lg font-semibold text-slate-800">
+          <h2 className="mb-1 text-lg font-semibold text-slate-800">
             Select A Car
           </h2>
 
-          <p className="text-sm text-slate-500">
-            Choose make, model, and year to explore vehicle details and fuel
+          <p className="mb-6 text-sm text-slate-500">
+            Choose a make, model, and year to explore vehicle details and fuel
             costs.
           </p>
 
-          <div className="mt-4 h-24 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50" />
+          <div className="grid gap-4 md:grid-cols-3">
+            <div>
+              <label
+                htmlFor="make"
+                className="mb-2 block text-sm font-medium text-slate-700"
+              >
+                Make
+              </label>
+
+              <select
+                id="make"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white"
+              >
+                <option>Select make</option>
+              </select>
+            </div>
+
+            <div>
+              <label
+                htmlFor="model"
+                className="mb-2 block text-sm font-medium text-slate-700"
+              >
+                Model
+              </label>
+
+              <select
+                id="model"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white"
+              >
+                <option>Select model</option>
+              </select>
+            </div>
+
+            <div>
+              <label
+                htmlFor="year"
+                className="mb-2 block text-sm font-medium text-slate-700"
+              >
+                Year
+              </label>
+
+              <select
+                id="year"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white"
+              >
+                <option>Select year</option>
+              </select>
+            </div>
+          </div>
+
+          <button className="mt-6 rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700">
+            Explore Car
+          </button>
         </section>
 
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md">
