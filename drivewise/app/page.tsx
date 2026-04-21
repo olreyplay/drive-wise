@@ -16,13 +16,14 @@ type Car = {
 };
 
 type SelectedCar = Car | null;
+type FavoriteCar = Car;
 
 export default function Home() {
   const [selectedCar, setSelectedCar] = useState<SelectedCar>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [monthlyMiles, setMonthlyMiles] = useState("1000");
   const [fuelPrice, setFuelPrice] = useState("3.5");
-  const [favorites, setFavorites] = useState<SelectedCar[]>([]);
+  const [favorites, setFavorites] = useState<FavoriteCar[]>([]);
   const [firstCarToCompare, setFirstCarToCompare] = useState("");
   const [secondCarToCompare, setSecondCarToCompare] = useState("");
 
@@ -48,18 +49,19 @@ export default function Home() {
     year: string;
   }) {
     setIsLoading(true);
+    try {
+      const fuelData = await getFuelEconomyData(car.make, car.model, car.year);
 
-    const fuelData = await getFuelEconomyData(car.make, car.model, car.year);
-
-    setSelectedCar({
-      ...car,
-      cityMpg: fuelData?.cityMpg || "N/A",
-      highwayMpg: fuelData?.highwayMpg || "N/A",
-      fuelType: fuelData?.fuelType || "N/A",
-      drive: fuelData?.drive || "N/A",
-    });
-
-    setIsLoading(false);
+      setSelectedCar({
+        ...car,
+        cityMpg: fuelData?.cityMpg || "N/A",
+        highwayMpg: fuelData?.highwayMpg || "N/A",
+        fuelType: fuelData?.fuelType || "N/A",
+        drive: fuelData?.drive || "N/A",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   function addToFavorites() {
@@ -77,7 +79,7 @@ export default function Home() {
     setFavorites([...favorites, selectedCar]);
   }
 
-  function removeFromFavorites(carToRemove: SelectedCar) {
+  function removeFromFavorites(carToRemove: FavoriteCar) {
     setFavorites(
       favorites.filter(
         (car) =>
@@ -90,9 +92,10 @@ export default function Home() {
     );
   }
 
-  function getCarLabel(car: SelectedCar) {
-    if (!car) return "";
-
+  function getCarLabel(car: FavoriteCar | SelectedCar) {
+    if (!car) {
+      return "";
+    }
     return `${car.year} ${car.make} ${car.model}`;
   }
 
@@ -266,9 +269,9 @@ export default function Home() {
 
           {favorites.length > 0 && (
             <div className="grid gap-4 md:grid-cols-2">
-              {favorites.map((car, index) => (
+              {favorites.map((car) => (
                 <div
-                  key={index}
+                  key={getCarLabel(car)}
                   className="rounded-xl border border-slate-200 bg-slate-50 p-4"
                 >
                   <h3 className="text-lg font-semibold text-slate-800">
