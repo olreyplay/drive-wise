@@ -23,6 +23,8 @@ export default function Home() {
   const [monthlyMiles, setMonthlyMiles] = useState("1000");
   const [fuelPrice, setFuelPrice] = useState("3.5");
   const [favorites, setFavorites] = useState<SelectedCar[]>([]);
+  const [firstCarToCompare, setFirstCarToCompare] = useState("");
+  const [secondCarToCompare, setSecondCarToCompare] = useState("");
 
   const cityMpg = Number(selectedCar?.cityMpg || 0);
   const monthlyMilesValue = Number(monthlyMiles);
@@ -87,6 +89,20 @@ export default function Home() {
       ),
     );
   }
+
+  function getCarLabel(car: SelectedCar) {
+    if (!car) return "";
+
+    return `${car.year} ${car.make} ${car.model}`;
+  }
+
+  const firstComparedCar = favorites.find(
+    (car) => getCarLabel(car) === firstCarToCompare,
+  );
+
+  const secondComparedCar = favorites.find(
+    (car) => getCarLabel(car) === secondCarToCompare,
+  );
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900">
@@ -271,6 +287,117 @@ export default function Home() {
                   </button>
                 </div>
               ))}
+            </div>
+          )}
+        </section>
+
+        <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-slate-800">
+            Compare Cars
+          </h2>
+
+          <p className="mb-6 text-sm text-slate-500">
+            Choose two saved cars to compare their fuel and drive details side
+            by side.
+          </p>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label
+                htmlFor="firstCompareCar"
+                className="mb-2 block text-sm font-medium text-slate-700"
+              >
+                First Car
+              </label>
+
+              <select
+                id="firstCompareCar"
+                value={firstCarToCompare}
+                onChange={(e) => setFirstCarToCompare(e.target.value)}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white"
+              >
+                <option value="">Select first car</option>
+
+                {favorites.map((car) => {
+                  const label = getCarLabel(car);
+
+                  return (
+                    <option key={label} value={label}>
+                      {label}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+
+            <div>
+              <label
+                htmlFor="secondCompareCar"
+                className="mb-2 block text-sm font-medium text-slate-700"
+              >
+                Second Car
+              </label>
+
+              <select
+                id="secondCompareCar"
+                value={secondCarToCompare}
+                onChange={(e) => setSecondCarToCompare(e.target.value)}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white"
+              >
+                <option value="">Select second car</option>
+
+                {favorites.map((car) => {
+                  const label = getCarLabel(car);
+
+                  return (
+                    <option key={label} value={label}>
+                      {label}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          </div>
+
+          {!firstComparedCar || !secondComparedCar ? (
+            <p className="mt-6 text-sm text-slate-500">
+              Select two saved cars to see the comparison.
+            </p>
+          ) : (
+            <div className="mt-6 grid gap-4 lg:grid-cols-2">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                <p className="text-sm font-medium uppercase tracking-wide text-blue-700">
+                  First Car
+                </p>
+
+                <h3 className="mt-2 text-xl font-bold text-slate-800">
+                  {getCarLabel(firstComparedCar)}
+                </h3>
+
+                <div className="mt-4 space-y-2 text-sm text-slate-600">
+                  <p>City MPG: {firstComparedCar.cityMpg}</p>
+                  <p>Highway MPG: {firstComparedCar.highwayMpg}</p>
+                  <p>Fuel Type: {firstComparedCar.fuelType}</p>
+                  <p>Drive Type: {firstComparedCar.drive}</p>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                <p className="text-sm font-medium uppercase tracking-wide text-blue-700">
+                  Second Car
+                </p>
+
+                <h3 className="mt-2 text-xl font-bold text-slate-800">
+                  {getCarLabel(secondComparedCar)}
+                </h3>
+
+                <div className="mt-4 space-y-2 text-sm text-slate-600">
+                  <p>City MPG: {secondComparedCar.cityMpg}</p>
+                  <p>Highway MPG: {secondComparedCar.highwayMpg}</p>
+                  <p>Fuel Type: {secondComparedCar.fuelType}</p>
+                  <p>Drive Type: {secondComparedCar.drive}</p>
+                </div>
+              </div>
             </div>
           )}
         </section>
